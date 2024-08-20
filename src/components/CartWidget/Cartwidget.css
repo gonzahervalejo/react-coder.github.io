@@ -1,7 +1,32 @@
-.cart-widget {
-    width: 3.2rem;
-    margin: 1.2rem 1rem  1re1remm;
-    color: rgb(235, 237, 239);
-    border-radius: 10px white;
-   
+.widget {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.CartWidget {
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+#carrito {
+    transition: transform 0.2s ease;
+}
+
+#carrito:hover {
+    transform: scale(1.1);
+}
+
+.number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff6347;
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
 }

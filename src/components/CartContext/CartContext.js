@@ -1,107 +1,81 @@
-import { useState, useEffect, createContext, useContext } from "react"
+import { useState, useEffect, createContext, useContext } from "react";
+import "./CartContext.css";
 
 export const CartContext = createContext({
-    cart: [],
-    totalQuantity: 0
-})
+  cart: [],
+  totalQuantity: 0,
+});
 
-export const CartProvider = ({children}) => {
-    const [cart, setCart] = useState([])
-    const [totalQuantity, setTotalQuantity] = useState(0)
-    const [total, setTotal] = useState(0)
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [total, setTotal] = useState(0);
 
+  useEffect(() => {
+    const totalQty = cart.reduce((accu, prod) => accu + prod.quantity, 0);
+    setTotalQuantity(totalQty);
+  }, [cart]);
 
-    useEffect(() => {
-        const totalQty = getQuantity()
-        setTotalQuantity(totalQty)
-    }, [cart]) 
+  useEffect(() => {
+    const totalValue = cart.reduce(
+      (accu, prod) => accu + prod.quantity * prod.price,
+      0
+    );
+    setTotal(totalValue);
+  }, [cart]);
 
-    useEffect(() => {
-        const total = getTotal()
-        setTotal(total)
-      }, [cart]) 
-
-    const addItem = (productToAdd, quantity) => {
-        if(!isInCart(productToAdd.id)) {
-            productToAdd.quantity = quantity
-            setCart([...cart, productToAdd])
-
+  const addItem = (productToAdd, quantity) => {
+    if (!isInCart(productToAdd.id)) {
+      productToAdd.quantity = quantity;
+      setCart([...cart, productToAdd]);
+    } else {
+      const cartUpdated = cart.map((prod) => {
+        if (prod.id === productToAdd.id) {
+          return { ...prod, quantity: quantity };
         } else {
-
-            const cartUpdated = cart.map(prod => {
-
-                if(prod.id === productToAdd.id) {
-
-                    const productUpdated = {
-                        ...prod,
-                        quantity: quantity
-                    }
-
-                    return productUpdated
-                    
-                } else {
-                    
-                    return prod
-                }
-            })
-
-            setCart(cartUpdated)
+          return prod;
         }
+      });
+      setCart(cartUpdated);
     }
+  };
 
-    const isInCart = (id) => {
-        return cart.some(prod => prod.id === id)
-    }
+  const isInCart = (id) => {
+    return cart.some((prod) => prod.id === id);
+  };
 
-    const removeItem = (id) => {
-        const cartWithoutProduct = cart.filter(prod => prod.id !== id)
-        setCart(cartWithoutProduct)
-    }
+  const removeItem = (id) => {
+    const cartWithoutProduct = cart.filter((prod) => prod.id !== id);
+    setCart(cartWithoutProduct);
+  };
 
-    const getQuantity = () => {
-        let accu = 0
-    
-        cart.forEach(prod => {
-            accu += prod.quantity
-        })
-    
-        return accu
-    }
+  const clearCart = () => {
+    setCart([]);
+  };
 
-    const getTotal = () => {
-        let accu = 0
-  
-        cart.forEach(prod => {
-            accu += prod.quantity * prod.price
-        })
-  
-        return accu
-    }
+  const getProductQuantity = (id) => {
+    const product = cart.find((prod) => prod.id === id);
+    return product?.quantity || 0;
+  };
 
-    const clearCart = () => {
-        setCart([])
-    }
-
-    const getProductQuantity = (id) => {
-        const product = cart.find(prod => prod.id === id)
-
-        return product?.quantity
-    }
-
-    return (
-        <CartContext.Provider value={{ cart,
-         addItem,
-          removeItem,
-           isInCart,
-            totalQuantity,
-             total,
-              clearCart,
-              getProductQuantity }}>
-            {children}
-        </CartContext.Provider>
-    )
-}
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        addItem,
+        removeItem,
+        isInCart,
+        totalQuantity,
+        total,
+        clearCart,
+        getProductQuantity,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+};
 
 export const useCart = () => {
-    return useContext(CartContext)
-}
+  return useContext(CartContext);
+};
