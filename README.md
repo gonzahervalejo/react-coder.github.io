@@ -17,7 +17,4 @@ Install the dependencies and devDependencies and start the server.
 ## Deployment Link
 https://react-coder-h4lerjqzq-gonzahervalejo.vercel.app/
  
- ## Google Drive Link
- https://drive.google.com/drive/u/0/folders/1SQIIKBCRjLwk0fLrfWAzMA6PYJT6ncD4
- 
  Developed by Gonzalo Hervalejo
